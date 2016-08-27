@@ -1,43 +1,52 @@
-## Put comments here that give an overall description of what your
-## functions do
+## These two functions, makeCacheMatrix() and cacheSole(),
+## are designed to improve efficiency by not repeating the
+## computation of the inverse of a matrix by cacheing it 
+## and retrieving it as necessary.
 
-## Write a short comment describing this function
+## There are constructed by modifying a template of those 
+## given in the example in Assignment 2, Week 3, from
+## the Coursera R Programming course.
+
+## makeCacheMatrix
+
+## This takes a matrix as an argument. It sets the matrix as 
+## the matrix and the inverse as NULL. It returns a list of 
+## 4 nested functions that can be used to get and set the matrix 
+## and its inverse.
 
 makeCacheMatrix <- function(x = matrix()) {
-  i <- NULL
-  set <- function(y) {
-    x <<- y
-    i <<- NULL
-  }
-  get <- function() x
-  setinverse <- function(solve) i <<- solve(x)
-  getinverse <- function() i
-  list(set = set, get = get,
-       setinverse = setinverse,
-       getinverse = getinverse)
-  
 
-}
+    i <- NULL
+    setmatrix <- function(y) {
+      x <<- y
+      i <<- NULL
+    }
+    getmatrix <- function() x
+    setinverse <- function(solve) i <<- solve(x)
+    getinverse <- function() i
+    list(setmatrix = setmatrix, getmatrix = getmatrix,
+         setinverse = setinverse,
+         getinverse = getinverse)
+    }
 
+## cacheSolve()
 
-## Write a short comment describing this function
+## This function takes the makeCaheMatrix() as an argument
+## It searches the parent environment for a cached inverse
+## and returns it if it is not NULL. If it is NULL it uses
+## the relevent nested function to return the compute, nest
+## and return the inverse. 
 
 cacheSolve <- function(x, ...) {
-    i <- x$getinverse()
-    if(!is.null(i)) {
-      message("getting cached data")
-      return(i)
-      
-    }else{
-      data <- x$get()
-      i <- solve(data, ...)
-      x$setinverse(i)}
-    i
+  
+  i <- x$getinverse()
+  if(!is.null(i)) {
+    message("getting cached data")
+    return(i)
     
-        ## Return a matrix that is the inverse of 'x'
-}
-  mat <- matrix (c(1,2,3,4), nrow =2, ncol =2)
-  
-  mymatrix <- makeCacheMatrix(mat)
-  
-  cacheSolve(mymatrix)
+  }else{
+    data <- x$getmatrix()
+    i <- solve(data, ...)
+    x$setinverse(i)}
+  i
+  }
